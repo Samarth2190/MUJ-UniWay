@@ -83,7 +83,7 @@ Ensure you have the following installed:
 
 ### Backend & Database
 - **🟢 Node.js** - JavaScript runtime
-- **🗄️ SQL Database** - Structured data storage
+- **🗄️ Neon PostgreSQL Database** - Structured data storage
 - **🔗 API Routes** - Next.js API endpoints
 
 ### Development Tools
