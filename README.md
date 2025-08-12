@@ -1,20 +1,22 @@
-# 🎓 MUJ-UniWay
+<div align="center">
 
-> **Navigate Your Campus Journey with Ease** 🗺️
 
-[![Next.js](https://img.shields.io/badge/Next.js-000000?style=for-the-badge&logo=next.js&logoColor=white)](https://nextjs.org/)
-[![TypeScript](https://img.shields.io/badge/TypeScript-007ACC?style=for-the-badge&logo=typescript&logoColor=white)](https://www.typescriptlang.org/)
-[![React](https://img.shields.io/badge/React-20232A?style=for-the-badge&logo=react&logoColor=61DAFB)](https://reactjs.org/)
-[![TailwindCSS](https://img.shields.io/badge/Tailwind_CSS-38B2AC?style=for-the-badge&logo=tailwind-css&logoColor=white)](https://tailwindcss.com/)
-[![Node.js](https://img.shields.io/badge/Node.js-43853D?style=for-the-badge&logo=node.js&logoColor=white)](https://nodejs.org/)
+  ![UniWay banner](./assets/MUJ-UNIWAY4.jpg)
 
----
+[![Next.js](https://img.shields.io/badge/N-Next.js-black)](https://nextjs.org/)
+[![TypeScript](https://img.shields.io/badge/TypeScript-3178C6?style=flat&logo=typescript&logoColor=white)](https://www.typescriptlang.org/)
+[![React](https://img.shields.io/badge/React-61DAFB?style=flat&logo=react&logoColor=black)](https://reactjs.org/)
+[![TailwindCSS](https://img.shields.io/badge/Tailwind_CSS-06B6D4?style=flat&logo=tailwind-css&logoColor=white)](https://tailwindcss.com/)
+[![Node.js](https://img.shields.io/badge/Node.js-339933?style=flat&logo=node.js&logoColor=white)](https://nodejs.org/)
+[![PostgreSQL](https://badgen.net/badge/icon/postgresql?icon=postgresql&label)]()
 
-## 🌟 About
+**A modern, responsive web application designed specifically for Manipal University Jaipur students and visitors. It provides comprehensive campus navigation with real-time location tracking, interactive maps, and smart routing for seamless campus exploration and enhanced student experience**
 
-**MUJ-UniWay** is a comprehensive campus navigation and information system designed specifically for Manipal University Jaipur students and visitors. Get real-time location tracking, interactive campus maps, and seamless navigation to make your campus experience smooth and efficient.
+</div>
 
-### ✨ Key Features
+
+
+## ✨ Key Features
 
 - 🗺️ **Interactive Campus Map** - Explore MUJ campus with detailed, interactive mapping
 - 📍 **Real-time Location Tracking** - Know exactly where you are on campus
@@ -175,38 +177,12 @@ We welcome contributions! Please follow these steps:
 
 ---
 
-## 📋 Roadmap
-
-- [ ] 🔔 Push notifications for campus events
-- [ ] 🚌 Real-time bus tracking
-- [ ] 📅 Integration with academic calendar
-- [ ] 🍽️ Dining hall menus and timings
-- [ ] 🏃‍♂️ Fitness center availability
-- [ ] 📚 Library seat booking
-
----
-
 ## 📞 Support
 
 If you encounter any issues or have questions:
 
 - 🐛 **Bug Reports**: [Create an Issue](https://github.com/Samarth2190/MUJ-UniWay/issues)
 - 💡 **Feature Requests**: [Start a Discussion](https://github.com/Samarth2190/MUJ-UniWay/discussions)
-- 📧 **Email**: [your-email@example.com]
-
----
-
-## 📄 License
-
-This project is licensed under the **MIT License** - see the [LICENSE](LICENSE) file for details.
-
----
-
-## 👨‍💻 Author
-
-**Samarth**
-- GitHub: [@Samarth2190](https://github.com/Samarth2190)
-- LinkedIn: [Add your LinkedIn profile]
 
 ---
 
