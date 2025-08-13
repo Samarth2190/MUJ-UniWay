@@ -247,7 +247,7 @@ export default function CampusNavigator() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-background flex items-center justify-center">
+      <div className="min-h-screen bg-gradient-to-br from-gray-950 via-gray-900 to-black flex items-center justify-center">
         <div className="text-center">
           <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-primary mx-auto"></div>
           <p className="mt-4 text-muted-foreground">Loading Manipal University Jaipur campus...</p>
@@ -258,7 +258,7 @@ export default function CampusNavigator() {
 
   if (error) {
     return (
-      <div className="min-h-screen bg-background flex items-center justify-center">
+      <div className="min-h-screen bg-gradient-to-br from-gray-950 via-gray-900 to-black flex items-center justify-center">
         <div className="text-center">
           <div className="text-red-500 text-6xl mb-4">⚠️</div>
           <h2 className="text-2xl font-bold mb-2">Error Loading Campus Map</h2>
@@ -270,15 +270,15 @@ export default function CampusNavigator() {
   }
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-gradient-to-br from-gray-950 via-gray-900 to-black">
       {/* Header */}
-      <header className="border-b bg-white/95 backdrop-blur supports-[backdrop-filter]:bg-white/60">
+      <header className="border-b gradient-header backdrop-blur-medium shadow-soft sticky top-0 z-50 crystal-border">
         <div className="container mx-auto px-4 py-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2">
               <MapPin className="h-6 w-6 text-primary" />
               <div>
-                <h1 className="text-2xl font-bold">MUJ Campus Navigator</h1>
+                <h1 className="text-2xl font-bold bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent neon-text">MUJ Campus Navigator</h1>
                 <p className="text-sm text-muted-foreground">Manipal University Jaipur</p>
               </div>
             </div>
@@ -289,7 +289,7 @@ export default function CampusNavigator() {
                   placeholder="Search buildings, hostels, facilities..."
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
-                  className="pl-10 w-80"
+                  className="pl-10 w-80 shadow-soft backdrop-blur-soft glass-input"
                 />
               </div>
               <Button
@@ -442,7 +442,7 @@ export default function CampusNavigator() {
                           </div>
                         ))}
                         {currentRoute.instructions.length > 5 && (
-                          <p className="text-xs text-gray-500 text-center">
+                          <p className="text-xs text-black-500 text-center">
                             +{currentRoute.instructions.length - 5} more steps
                           </p>
                         )}
