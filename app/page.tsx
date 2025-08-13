@@ -247,10 +247,13 @@ export default function CampusNavigator() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-background flex items-center justify-center">
+      <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900 flex items-center justify-center">
         <div className="text-center">
-          <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-primary mx-auto"></div>
-          <p className="mt-4 text-muted-foreground">Loading Manipal University Jaipur campus...</p>
+          <div className="relative">
+            <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-primary mx-auto shadow-glow-primary"></div>
+            <div className="absolute inset-0 rounded-full bg-gradient-to-r from-blue-400/20 to-purple-400/20 animate-pulse"></div>
+          </div>
+          <p className="mt-4 text-muted-foreground bg-gradient-to-r from-primary to-blue-600 bg-clip-text text-transparent font-medium">Loading Manipal University Jaipur campus...</p>
         </div>
       </div>
     )
@@ -258,27 +261,32 @@ export default function CampusNavigator() {
 
   if (error) {
     return (
-      <div className="min-h-screen bg-background flex items-center justify-center">
+      <div className="min-h-screen bg-gradient-to-br from-red-50 via-white to-orange-50 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900 flex items-center justify-center">
         <div className="text-center">
-          <div className="text-red-500 text-6xl mb-4">⚠️</div>
-          <h2 className="text-2xl font-bold mb-2">Error Loading Campus Map</h2>
+          <div className="relative mb-4">
+            <div className="text-red-500 text-6xl mb-4 shadow-glow-danger">⚠️</div>
+            <div className="absolute inset-0 bg-gradient-to-r from-red-400/20 to-orange-400/20 rounded-full blur-xl"></div>
+          </div>
+          <h2 className="text-2xl font-bold mb-2 bg-gradient-to-r from-red-600 to-orange-600 bg-clip-text text-transparent">Error Loading Campus Map</h2>
           <p className="text-muted-foreground mb-4">{error}</p>
-          <Button onClick={() => window.location.reload()}>Try Again</Button>
+          <Button onClick={() => window.location.reload()} className="shadow-glow-danger">Try Again</Button>
         </div>
       </div>
     )
   }
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900">
       {/* Header */}
-      <header className="border-b bg-white/95 backdrop-blur supports-[backdrop-filter]:bg-white/60">
+      <header className="border-b gradient-header backdrop-blur-medium shadow-soft sticky top-0 z-50">
         <div className="container mx-auto px-4 py-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2">
-              <MapPin className="h-6 w-6 text-primary" />
+              <div className="p-2 rounded-lg shadow-glow-primary bg-white/20 backdrop-blur-soft">
+                <MapPin className="h-6 w-6 text-primary" />
+              </div>
               <div>
-                <h1 className="text-2xl font-bold">MUJ Campus Navigator</h1>
+                <h1 className="text-2xl font-bold bg-gradient-to-r from-primary to-blue-600 bg-clip-text text-transparent">MUJ Campus Navigator</h1>
                 <p className="text-sm text-muted-foreground">Manipal University Jaipur</p>
               </div>
             </div>
@@ -289,19 +297,20 @@ export default function CampusNavigator() {
                   placeholder="Search buildings, hostels, facilities..."
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
-                  className="pl-10 w-80"
+                  className="pl-10 w-80 shadow-soft backdrop-blur-soft bg-white/80 dark:bg-gray-800/80"
                 />
               </div>
               <Button
                 variant="outline"
                 size="sm"
                 onClick={() => setMapStyle(mapStyle === "street" ? "satellite" : "street")}
+                className="shadow-soft"
               >
                 <Layers className="h-4 w-4 mr-2" />
                 {mapStyle === "street" ? "Satellite" : "Street"}
               </Button>
               <Link href="/admin">
-                <Button variant="outline" size="sm">
+                <Button variant="outline" size="sm" className="shadow-soft">
                   <Settings className="h-4 w-4 mr-2" />
                   Admin
                 </Button>
@@ -316,7 +325,7 @@ export default function CampusNavigator() {
           {/* Sidebar */}
           <div className="lg:col-span-1 space-y-6">
             {/* Category Filter */}
-            <Card>
+            <Card className="shadow-medium hover:shadow-strong">
               <CardHeader>
                 <CardTitle className="text-lg">Campus Areas</CardTitle>
                 <CardDescription>Browse by building type</CardDescription>
@@ -351,7 +360,7 @@ export default function CampusNavigator() {
 
             {/* Navigation Panel */}
             {(navigationFrom || navigationTo) && (
-              <Card>
+              <Card className="shadow-medium hover:shadow-strong shadow-glow-primary">
                 <CardHeader>
                   <CardTitle className="text-lg flex items-center gap-2">
                     <Navigation className="h-5 w-5" />
@@ -389,7 +398,11 @@ export default function CampusNavigator() {
 
                   {currentRoute && navigationFrom && navigationTo && (
                     <div
-                      className={`p-3 rounded-lg space-y-2 ${currentRoute.isRealRoute ? "bg-blue-50" : "bg-yellow-50"}`}
+                      className={`p-3 rounded-lg space-y-2 shadow-soft backdrop-blur-soft ${
+                        currentRoute.isRealRoute 
+                          ? "bg-gradient-to-r from-blue-50 to-blue-100 dark:from-blue-900/20 dark:to-blue-800/20 shadow-glow-primary" 
+                          : "bg-gradient-to-r from-yellow-50 to-yellow-100 dark:from-yellow-900/20 dark:to-yellow-800/20 shadow-glow-warning"
+                      }`}
                     >
                       <div className="flex items-center gap-2">
                         <Route
@@ -437,8 +450,8 @@ export default function CampusNavigator() {
                       </div>
                       <div className="max-h-32 overflow-y-auto space-y-1">
                         {currentRoute.instructions.slice(0, 5).map((instruction, index) => (
-                          <div key={index} className="text-xs p-2 bg-gray-50 rounded">
-                            <span className="font-medium text-gray-700">{index + 1}.</span> {instruction}
+                          <div key={index} className="text-xs p-2 bg-gradient-to-r from-gray-50 to-gray-100 dark:from-gray-800/50 dark:to-gray-700/50 rounded shadow-soft backdrop-blur-soft">
+                            <span className="font-medium text-gray-700 dark:text-gray-300">{index + 1}.</span> {instruction}
                           </div>
                         ))}
                         {currentRoute.instructions.length > 5 && (
@@ -465,7 +478,7 @@ export default function CampusNavigator() {
 
             {/* Building Details */}
             {selectedBuilding && (
-              <Card>
+              <Card className="shadow-medium hover:shadow-strong shadow-glow-success">
                 <CardHeader>
                   <CardTitle className="flex items-center gap-2">
                     {(() => {
@@ -565,7 +578,7 @@ export default function CampusNavigator() {
 
             {/* Quick Actions for Current Location */}
             {currentLocation && !selectedBuilding && (
-              <Card>
+              <Card className="shadow-medium hover:shadow-strong shadow-glow">
                 <CardHeader>
                   <CardTitle className="flex items-center gap-2">
                     <Crosshair className="h-5 w-5 text-blue-600" />
@@ -588,7 +601,7 @@ export default function CampusNavigator() {
 
           {/* Map Area */}
           <div className="lg:col-span-3">
-            <Card className="h-[600px]">
+            <Card className="h-[600px] shadow-medium hover:shadow-strong">
               <CardHeader>
                 <CardTitle>Manipal University Jaipur Campus Map</CardTitle>
                 <CardDescription>Click on buildings to view details and plan your route across campus</CardDescription>
@@ -612,7 +625,7 @@ export default function CampusNavigator() {
             </Card>
 
             {/* Legend */}
-            <Card className="mt-4">
+            <Card className="mt-4 shadow-soft hover:shadow-medium">
               <CardContent className="pt-6">
                 <div className="flex flex-wrap gap-4">
                   {categories.map((category) => {
