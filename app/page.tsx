@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useEffect, useMemo } from "react"
+import { useState, useEffect, useMemo, useCallback, useRef} from "react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
@@ -97,53 +97,69 @@ export default function CampusNavigator() {
   const [currentLocation, setCurrentLocation] = useState<LocationCoordinates | null>(null)
   const [navigationState, setNavigationState] = useState<NavigationState | null>(null)
   const [useCurrentLocationAsStart, setUseCurrentLocationAsStart] = useState(false)
-
+  const searchInputRef = useRef(null)
   // Fetch buildings from API
   useEffect(() => {
-    const fetchBuildings = async () => {
-      try {
-        setLoading(true)
-        setError(null)
-
-        const params = new URLSearchParams()
-        if (selectedCategory !== "all") {
-          params.append("category", selectedCategory)
-        }
-        if (searchQuery) {
-          params.append("search", searchQuery)
-        }
-
-        const response = await fetch(`/api/buildings?${params}`)
-
-        if (!response.ok) {
-          throw new Error(`HTTP error! status: ${response.status}`)
-        }
-
-        const data = await response.json()
-
-        if (Array.isArray(data)) {
-          setBuildings(data)
-        } else {
-          console.error("API returned non-array data:", data)
+    // Debounce the search to prevent excessive API calls
+    const timeoutId = setTimeout(() => {
+      const fetchBuildings = async () => {
+        try {
+          setLoading(true)
+          setError(null)
+  
+          const params = new URLSearchParams()
+          if (selectedCategory !== "all") {
+            params.append("category", selectedCategory)
+          }
+          if (searchQuery) {
+            params.append("search", searchQuery)
+          }
+  
+          const response = await fetch(`/api/buildings?${params}`)
+  
+          if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`)
+          }
+  
+          const data = await response.json()
+  
+          if (Array.isArray(data)) {
+            setBuildings(data)
+          } else {
+            console.error("API returned non-array data:", data)
+            setBuildings([])
+            setError("Invalid data format received")
+          }
+        } catch (error) {
+          console.error("Error fetching buildings:", error)
           setBuildings([])
-          setError("Invalid data format received")
+          setError(error.message || "Failed to load buildings")
+        } finally {
+          setLoading(false)
         }
-      } catch (error) {
-        console.error("Error fetching buildings:", error)
-        setBuildings([])
-        setError(error.message || "Failed to load buildings")
-      } finally {
-        setLoading(false)
       }
-    }
+  
+      fetchBuildings()
+    }, 1000) 
 
-    fetchBuildings()
-  }, [selectedCategory, searchQuery])
+  return () => clearTimeout(timeoutId)
+}, [selectedCategory, searchQuery])
 
   const categories = useMemo(() => {
     if (!Array.isArray(buildings)) return []
     return [...new Set(buildings.map((b) => b.category))]
   }, [buildings])
+
+  const handleSearchChange = useCallback((e) => {
+    setSearchQuery(e.target.value)
+    
+    // Maintain focus after state update
+    setTimeout(() => {
+      if (searchInputRef.current) {
+        searchInputRef.current.focus()
+      }
+    }, 0)
+  }, [])
 
   const handleBuildingClick = (building) => {
     setSelectedBuilding(building)
@@ -276,9 +292,10 @@ export default function CampusNavigator() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900">
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900 ">
+      <div className="gradient-navbar"></div>
       {/* Header */}
-      <header className="border-b gradient-header backdrop-blur-medium shadow-soft sticky top-0 z-50">
+      <header className="border-b gradient-header backdrop-blur-medium sticky top-0 z-50">
         <div className="container mx-auto px-4 py-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2">
@@ -291,26 +308,28 @@ export default function CampusNavigator() {
               </div>
             </div>
             <div className="flex items-center gap-4">
-              <div className="relative">
-                <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+            <div className="relative rounded-full p-[2px]"> 
+                <Search className="absolute left-5 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
                 <Input
+                  ref={searchInputRef}
                   placeholder="Search buildings, hostels, facilities..."
                   value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
-                  className="pl-10 w-80 shadow-soft backdrop-blur-soft bg-white/80 dark:bg-gray-800/80"
+                  onChange={handleSearchChange}
+                  className="pl-10 w-80 rounded-full bg-white/80 dark:bg-gray-800/80 border-none shadow-soft backdrop-blur-soft shadow-rotating-gradient gradient-border"
                 />
               </div>
               <Button
+                type="button"
                 variant="outline"
                 size="sm"
                 onClick={() => setMapStyle(mapStyle === "street" ? "satellite" : "street")}
-                className="shadow-soft"
+                className="gradient-shadow gradient-border"
               >
                 <Layers className="h-4 w-4 mr-2" />
                 {mapStyle === "street" ? "Satellite" : "Street"}
               </Button>
               <Link href="/admin">
-                <Button variant="outline" size="sm" className="shadow-soft">
+                <Button variant="outline" size="sm" className="gradient-border gradient-shadow">
                   <Settings className="h-4 w-4 mr-2" />
                   Admin
                 </Button>

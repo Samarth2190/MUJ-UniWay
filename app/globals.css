@@ -3,6 +3,8 @@
 
 @custom-variant dark (&:is(.dark *));
 
+
+
 :root {
   --background: oklch(1 0 0);
   --foreground: oklch(0.145 0 0);
@@ -124,8 +126,25 @@
 
 /* Custom shadows and gradients */
 @layer utilities {
+
+  .gradient-shadow{
+    box-shadow: 40px 0 100px #008cff85, -40px 0 100px #e100ffbb !important;
+  }
   .shadow-soft {
     box-shadow: 0 4px 20px -3px rgba(0, 0, 0, 0.12), 0 12px 25px -2px rgba(0, 0, 0, 0.08);
+  }
+  .gradient-border {
+    position: relative;
+    border: none;
+    border-radius: 9999px;
+    background: linear-gradient(white, white) padding-box,
+                linear-gradient(90deg, #008cff85, #e100ffbb) border-box;
+    border: 2px solid transparent;
+  }
+  
+  
+  .shadow-navbar{
+    box-shadow: 40px 0 100px #008cff85, -40px 0 100px #e100ffbb;
   }
   
   .shadow-medium {
