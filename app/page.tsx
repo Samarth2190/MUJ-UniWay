@@ -247,7 +247,7 @@ export default function CampusNavigator() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-gray-950 via-gray-900 to-black flex items-center justify-center">
+      <div className="min-h-screen living-bg particle-bg flex items-center justify-center">
         <div className="text-center">
           <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-primary mx-auto"></div>
           <p className="mt-4 text-muted-foreground">Loading Manipal University Jaipur campus...</p>
@@ -258,7 +258,7 @@ export default function CampusNavigator() {
 
   if (error) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-gray-950 via-gray-900 to-black flex items-center justify-center">
+      <div className="min-h-screen living-bg particle-bg flex items-center justify-center">
         <div className="text-center">
           <div className="text-red-500 text-6xl mb-4">⚠️</div>
           <h2 className="text-2xl font-bold mb-2">Error Loading Campus Map</h2>
@@ -270,15 +270,16 @@ export default function CampusNavigator() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-950 via-gray-900 to-black">
+    <div className="min-h-screen living-bg">
       {/* Header */}
-      <header className="border-b gradient-header backdrop-blur-medium shadow-soft sticky top-0 z-50 crystal-border">
-        <div className="container mx-auto px-4 py-4">
+      <header className="border-b gradient-living-header backdrop-blur-living-medium shadow-crystal-strong crystal-border-living z-10 sticky top-0">
+        <div className="container mx-auto px-4 py-4 z-50 sticky top-0">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2">
-              <MapPin className="h-6 w-6 text-primary" />
+              <MapPin className="h-6 w-6 text-primary glow-living-primary" />
               <div>
-                <h1 className="text-2xl font-bold bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent neon-text">MUJ Campus Navigator</h1>
+              <h1 className="text-2xl font-bold bg-gradient-to-r from-indigo-700 via-blue-400 to-cyan-400 bg-clip-text text-transparent animate-gradient">MUJ Campus Navigator</h1>
+
                 <p className="text-sm text-muted-foreground">Manipal University Jaipur</p>
               </div>
             </div>
@@ -289,19 +290,20 @@ export default function CampusNavigator() {
                   placeholder="Search buildings, hostels, facilities..."
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
-                  className="pl-10 w-80 shadow-soft backdrop-blur-soft glass-input"
+                  className="pl-10 w-80 shadow-crystal-medium backdrop-blur-living glass-input-living"
                 />
               </div>
               <Button
                 variant="outline"
                 size="sm"
                 onClick={() => setMapStyle(mapStyle === "street" ? "satellite" : "street")}
+                className="shadow-crystal hover:shadow-crystal-medium"
               >
                 <Layers className="h-4 w-4 mr-2" />
                 {mapStyle === "street" ? "Satellite" : "Street"}
               </Button>
               <Link href="/admin">
-                <Button variant="outline" size="sm">
+                <Button variant="outline" size="sm" className="shadow-crystal hover:shadow-crystal-medium">
                   <Settings className="h-4 w-4 mr-2" />
                   Admin
                 </Button>
@@ -311,21 +313,22 @@ export default function CampusNavigator() {
         </div>
       </header>
 
-      <div className="container mx-auto px-4 py-6">
+      <div className="particle-bg">
+        <div className="container mx-auto px-4 py-6">
         <div className="grid lg:grid-cols-4 gap-6">
           {/* Sidebar */}
           <div className="lg:col-span-1 space-y-6">
             {/* Category Filter */}
-            <Card>
+            <Card className="shadow-crystal-medium hover:shadow-crystal-strong">
               <CardHeader>
-                <CardTitle className="text-lg">Campus Areas</CardTitle>
+                <CardTitle className="text-lg neon-text-living">Campus Areas</CardTitle>
                 <CardDescription>Browse by building type</CardDescription>
               </CardHeader>
               <CardContent>
                 <div className="space-y-2">
                   <Button
                     variant={selectedCategory === "all" ? "default" : "ghost"}
-                    className="w-full justify-start"
+                    className="w-full justify-start shadow-crystal hover:shadow-crystal-medium"
                     onClick={() => setSelectedCategory("all")}
                   >
                     All Buildings ({buildings.length})
@@ -337,7 +340,7 @@ export default function CampusNavigator() {
                       <Button
                         key={category}
                         variant={selectedCategory === category ? "default" : "ghost"}
-                        className="w-full justify-start"
+                        className="w-full justify-start shadow-crystal hover:shadow-crystal-medium"
                         onClick={() => setSelectedCategory(category)}
                       >
                         <Icon className="h-4 w-4 mr-2" />
@@ -351,9 +354,9 @@ export default function CampusNavigator() {
 
             {/* Navigation Panel */}
             {(navigationFrom || navigationTo) && (
-              <Card>
+              <Card className="shadow-crystal-medium hover:shadow-crystal-strong glow-living-primary">
                 <CardHeader>
-                  <CardTitle className="text-lg flex items-center gap-2">
+                  <CardTitle className="text-lg flex items-center gap-2 neon-text-living">
                     <Navigation className="h-5 w-5" />
                     Campus Navigation
                   </CardTitle>
@@ -364,13 +367,13 @@ export default function CampusNavigator() {
                       <p className="text-sm text-muted-foreground">From:</p>
                       <div className="flex items-center gap-2">
                         {navigationFrom.id === -1 ? (
-                          <Crosshair className="h-4 w-4 text-blue-600" />
+                          <Crosshair className="h-4 w-4 text-blue-600 glow-living-primary" />
                         ) : (
                           <Building2 className="h-4 w-4" />
                         )}
                         <p className="font-medium">{navigationFrom.name}</p>
                         {navigationFrom.id === -1 && (
-                          <Badge variant="secondary" className="text-xs">
+                          <Badge variant="secondary" className="text-xs shadow-crystal">
                             Live GPS
                           </Badge>
                         )}
@@ -389,7 +392,7 @@ export default function CampusNavigator() {
 
                   {currentRoute && navigationFrom && navigationTo && (
                     <div
-                      className={`p-3 rounded-lg space-y-2 ${currentRoute.isRealRoute ? "bg-blue-50" : "bg-yellow-50"}`}
+                      className={`p-3 rounded-lg space-y-2 shadow-crystal ${currentRoute.isRealRoute ? "bg-blue-50/20 backdrop-blur-living" : "bg-yellow-50/20 backdrop-blur-living"}`}
                     >
                       <div className="flex items-center gap-2">
                         <Route
@@ -437,7 +440,7 @@ export default function CampusNavigator() {
                       </div>
                       <div className="max-h-32 overflow-y-auto space-y-1">
                         {currentRoute.instructions.slice(0, 5).map((instruction, index) => (
-                          <div key={index} className="text-xs p-2 bg-gray-50 rounded">
+                          <div key={index} className="text-xs p-2 bg-gray-50/20 backdrop-blur-living rounded shadow-crystal">
                             <span className="font-medium text-gray-700">{index + 1}.</span> {instruction}
                           </div>
                         ))}
@@ -450,7 +453,7 @@ export default function CampusNavigator() {
                     </div>
                   )}
 
-                  <Button onClick={clearNavigation} variant="outline" className="w-full bg-transparent">
+                  <Button onClick={clearNavigation} variant="outline" className="w-full bg-transparent shadow-crystal hover:shadow-crystal-medium">
                     Clear Navigation
                   </Button>
                 </CardContent>
@@ -465,9 +468,9 @@ export default function CampusNavigator() {
 
             {/* Building Details */}
             {selectedBuilding && (
-              <Card>
+              <Card className="shadow-crystal-medium hover:shadow-crystal-strong glow-living-success">
                 <CardHeader>
-                  <CardTitle className="flex items-center gap-2">
+                  <CardTitle className="flex items-center gap-2 neon-text-living">
                     {(() => {
                       const Icon = categoryIcons[selectedBuilding.category]
                       return <Icon className="h-5 w-5" />
@@ -477,7 +480,7 @@ export default function CampusNavigator() {
                   <CardDescription>{selectedBuilding.description}</CardDescription>
                 </CardHeader>
                 <CardContent className="space-y-4">
-                  <Badge style={{ backgroundColor: categoryColors[selectedBuilding.category] }} className="text-white">
+                  <Badge style={{ backgroundColor: categoryColors[selectedBuilding.category] }} className="text-white shadow-crystal glow-living-primary">
                     {selectedBuilding.category}
                   </Badge>
 
@@ -516,7 +519,7 @@ export default function CampusNavigator() {
                       <p className="font-medium text-sm mb-2">Facilities:</p>
                       <div className="flex flex-wrap gap-1">
                         {selectedBuilding.services.map((service) => (
-                          <Badge key={service} variant="secondary" className="text-xs">
+                          <Badge key={service} variant="secondary" className="text-xs shadow-crystal">
                             {service}
                           </Badge>
                         ))}
@@ -526,14 +529,14 @@ export default function CampusNavigator() {
 
                   {/* Navigation Buttons */}
                   <div className="space-y-2">
-                    <Button onClick={handleNavigate} className="w-full">
+                    <Button onClick={handleNavigate} className="w-full shadow-crystal-medium hover:shadow-crystal-strong">
                       <Navigation className="h-4 w-4 mr-2" />
                       {!navigationFrom ? "Start Navigation" : !navigationTo ? "Navigate Here" : "Set as Start"}
                     </Button>
 
                     {/* Navigate from current location button */}
                     {currentLocation && (
-                      <Button onClick={navigateFromCurrentLocation} variant="secondary" className="w-full">
+                      <Button onClick={navigateFromCurrentLocation} variant="secondary" className="w-full shadow-crystal hover:shadow-crystal-medium">
                         <Crosshair className="h-4 w-4 mr-2" />
                         Navigate from My Location
                       </Button>
@@ -541,7 +544,7 @@ export default function CampusNavigator() {
 
                     {/* Live navigation buttons */}
                     {currentRoute && !navigationState && (
-                      <Button onClick={startLiveNavigation} className="w-full bg-transparent" variant="outline">
+                      <Button onClick={startLiveNavigation} className="w-full bg-transparent shadow-crystal hover:shadow-crystal-medium" variant="outline">
                         <Navigation className="h-4 w-4 mr-2" />
                         Start Live Navigation
                       </Button>
@@ -551,7 +554,7 @@ export default function CampusNavigator() {
                     {currentLocation && !navigationState && (
                       <Button
                         onClick={startLiveNavigationFromCurrentLocation}
-                        className="w-full bg-transparent"
+                        className="w-full bg-transparent shadow-crystal hover:shadow-crystal-medium"
                         variant="outline"
                       >
                         <Target className="h-4 w-4 mr-2" />
@@ -565,16 +568,16 @@ export default function CampusNavigator() {
 
             {/* Quick Actions for Current Location */}
             {currentLocation && !selectedBuilding && (
-              <Card>
+              <Card className="shadow-crystal-medium hover:shadow-crystal-strong glow-living-primary">
                 <CardHeader>
-                  <CardTitle className="flex items-center gap-2">
+                  <CardTitle className="flex items-center gap-2 neon-text-living">
                     <Crosshair className="h-5 w-5 text-blue-600" />
                     Quick Actions
                   </CardTitle>
                   <CardDescription>Use your current location for navigation</CardDescription>
                 </CardHeader>
                 <CardContent className="space-y-2">
-                  <Button onClick={setCurrentLocationAsStart} variant="outline" className="w-full bg-transparent">
+                  <Button onClick={setCurrentLocationAsStart} variant="outline" className="w-full bg-transparent shadow-crystal hover:shadow-crystal-medium">
                     <Target className="h-4 w-4 mr-2" />
                     Set as Starting Point
                   </Button>
@@ -588,9 +591,9 @@ export default function CampusNavigator() {
 
           {/* Map Area */}
           <div className="lg:col-span-3">
-            <Card className="h-[600px]">
+            <Card className="h-[600px] shadow-crystal-medium hover:shadow-crystal-strong">
               <CardHeader>
-                <CardTitle>Manipal University Jaipur Campus Map</CardTitle>
+                <CardTitle className="neon-text-living">Manipal University Jaipur Campus Map</CardTitle>
                 <CardDescription>Click on buildings to view details and plan your route across campus</CardDescription>
               </CardHeader>
               <CardContent className="h-full p-0">
@@ -612,14 +615,14 @@ export default function CampusNavigator() {
             </Card>
 
             {/* Legend */}
-            <Card className="mt-4">
+            <Card className="mt-4 shadow-crystal-medium hover:shadow-crystal-strong">
               <CardContent className="pt-6">
                 <div className="flex flex-wrap gap-4">
                   {categories.map((category) => {
                     const Icon = categoryIcons[category]
                     return (
                       <div key={category} className="flex items-center gap-2">
-                        <div className="w-4 h-4 rounded-full" style={{ backgroundColor: categoryColors[category] }} />
+                        <div className="w-4 h-4 rounded-full shadow-crystal" style={{ backgroundColor: categoryColors[category] }} />
                         <Icon className="h-4 w-4" />
                         <span className="text-sm capitalize">{category}</span>
                       </div>
@@ -627,7 +630,7 @@ export default function CampusNavigator() {
                   })}
                   {currentLocation && (
                     <div className="flex items-center gap-2">
-                      <div className="w-4 h-4 rounded-full bg-blue-500" />
+                      <div className="w-4 h-4 rounded-full bg-blue-500 shadow-crystal glow-living-primary" />
                       <Crosshair className="h-4 w-4" />
                       <span className="text-sm">My Location</span>
                     </div>
@@ -638,6 +641,7 @@ export default function CampusNavigator() {
           </div>
         </div>
       </div>
+    </div>
     </div>
   )
 }
