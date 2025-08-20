@@ -26,11 +26,13 @@ import {
   Building2,
   Target,
   Crosshair,
+  ArrowRight,
 } from "lucide-react"
 import Link from "next/link"
 import dynamic from "next/dynamic"
 import { formatDistance, formatDuration, type RouteResponse } from "@/lib/routing"
 import LocationTracker from "@/components/location-tracker"
+import { LocationSelector } from "@/components/location-selector"
 import type { LocationCoordinates } from "@/lib/geolocation"
 import { type NavigationState, navigationService } from "@/lib/navigation"
 
@@ -67,11 +69,27 @@ const categoryColors = {
   outdoor: "#22c55e", // Light green for outdoor spaces
 }
 
+// Define Building type
+interface Building {
+  id: number
+  name: string
+  category: string
+  description: string
+  lat: number
+  lng: number
+  x?: number
+  y?: number
+  services: string[]
+  hours?: string
+  phone?: string
+  website?: string
+}
+
 // Create a virtual "My Location" building object
-const createMyLocationBuilding = (location: LocationCoordinates) => ({
+const createMyLocationBuilding = (location: LocationCoordinates): Building => ({
   id: -1, // Special ID for current location
   name: "My Location",
-  category: "location" as const,
+  category: "location",
   description: "Your current GPS location",
   lat: location.lat,
   lng: location.lng,
@@ -79,19 +97,17 @@ const createMyLocationBuilding = (location: LocationCoordinates) => ({
   y: 0,
   services: ["GPS Location", "Real-time Position"],
   hours: "24/7",
-  phone: undefined,
-  website: undefined,
 })
 
 export default function CampusNavigator() {
-  const [buildings, setBuildings] = useState([])
-  const [selectedBuilding, setSelectedBuilding] = useState(null)
+  const [buildings, setBuildings] = useState<Building[]>([])
+  const [selectedBuilding, setSelectedBuilding] = useState<Building | null>(null)
   const [searchQuery, setSearchQuery] = useState("")
   const [selectedCategory, setSelectedCategory] = useState("all")
-  const [navigationFrom, setNavigationFrom] = useState(null)
-  const [navigationTo, setNavigationTo] = useState(null)
+  const [navigationFrom, setNavigationFrom] = useState<Building | null>(null)
+  const [navigationTo, setNavigationTo] = useState<Building | null>(null)
   const [loading, setLoading] = useState(true)
-  const [error, setError] = useState(null)
+  const [error, setError] = useState<string | null>(null)
   const [mapStyle, setMapStyle] = useState("street")
   const [currentRoute, setCurrentRoute] = useState<RouteResponse | null>(null)
   const [currentLocation, setCurrentLocation] = useState<LocationCoordinates | null>(null)
@@ -131,7 +147,7 @@ export default function CampusNavigator() {
       } catch (error) {
         console.error("Error fetching buildings:", error)
         setBuildings([])
-        setError(error.message || "Failed to load buildings")
+        setError((error as Error).message || "Failed to load buildings")
       } finally {
         setLoading(false)
       }
@@ -145,7 +161,7 @@ export default function CampusNavigator() {
     return [...new Set(buildings.map((b) => b.category))]
   }, [buildings])
 
-  const handleBuildingClick = (building) => {
+  const handleBuildingClick = (building: Building) => {
     setSelectedBuilding(building)
   }
 
@@ -237,6 +253,22 @@ export default function CampusNavigator() {
     setCurrentRoute(route)
   }
 
+  // Calculate route when both locations are selected
+  const calculateRoute = async () => {
+    if (navigationFrom && navigationTo) {
+      try {
+        const { getWalkingRoute } = await import("@/lib/routing")
+        const route = await getWalkingRoute(
+          { lat: navigationFrom.lat, lng: navigationFrom.lng },
+          { lat: navigationTo.lat, lng: navigationTo.lng }
+        )
+        setCurrentRoute(route)
+      } catch (error) {
+        console.error("Failed to calculate route:", error)
+      }
+    }
+  }
+
   // Update navigation when current location changes and we're using it as start
   useEffect(() => {
     if (useCurrentLocationAsStart && currentLocation && navigationTo) {
@@ -278,13 +310,48 @@ export default function CampusNavigator() {
             <div className="flex items-center gap-2">
               <MapPin className="h-6 w-6 text-primary glow-living-primary" />
               <div>
-              <h1 className="text-2xl font-bold bg-gradient-to-r from-indigo-700 via-blue-400 to-cyan-400 bg-clip-text text-transparent animate-gradient">MUJ Campus Navigator</h1>
-
+                <h1 className="text-2xl font-bold bg-gradient-to-r from-indigo-700 via-blue-400 to-cyan-400 bg-clip-text text-transparent animate-gradient">MUJ Campus Navigator</h1>
                 <p className="text-sm text-muted-foreground">Manipal University Jaipur</p>
               </div>
             </div>
+            
+            {/* Location Selectors */}
+            <div className="flex items-center gap-4 flex-1 max-w-2xl mx-8">
+              <LocationSelector
+                label=""
+                placeholder="From"
+                value={navigationFrom}
+                onValueChange={setNavigationFrom}
+                buildings={buildings}
+                currentLocation={currentLocation}
+                allowCurrentLocation={true}
+                className="flex-1"
+              />
+              <ArrowRight className="h-4 w-4 text-muted-foreground" />
+              <LocationSelector
+                label=""
+                placeholder="To"
+                value={navigationTo}
+                onValueChange={setNavigationTo}
+                buildings={buildings}
+                currentLocation={currentLocation}
+                allowCurrentLocation={false}
+                className="flex-1"
+              />
+              {navigationFrom && navigationTo && (
+                <Button
+                  onClick={calculateRoute}
+                  className="shadow-crystal-medium hover:shadow-crystal-strong"
+                  size="sm"
+                >
+                  <Route className="h-4 w-4 mr-2" />
+                  Find Route
+                </Button>
+              )}
+            </div>
+            
             <div className="flex items-center gap-4">
-              <div className="relative">
+              {/* <div className="relative">
                 <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
                 <Input
                   placeholder="Search buildings, hostels, facilities..."
@@ -292,7 +359,7 @@ export default function CampusNavigator() {
                   onChange={(e) => setSearchQuery(e.target.value)}
                   className="pl-10 w-80 shadow-crystal-medium backdrop-blur-living glass-input-living"
                 />
-              </div>
+              </div> */}
               <Button
                 variant="outline"
                 size="sm"
@@ -334,7 +401,7 @@ export default function CampusNavigator() {
                     All Buildings ({buildings.length})
                   </Button>
                   {categories.map((category) => {
-                    const Icon = categoryIcons[category]
+                    const Icon = categoryIcons[category as keyof typeof categoryIcons]
                     const count = buildings.filter((b) => b.category === category).length
                     return (
                       <Button
@@ -392,40 +459,30 @@ export default function CampusNavigator() {
 
                   {currentRoute && navigationFrom && navigationTo && (
                     <div
-                      className={`p-3 rounded-lg space-y-2 shadow-crystal ${currentRoute.isRealRoute ? "bg-blue-50/20 backdrop-blur-living" : "bg-yellow-50/20 backdrop-blur-living"}`}
+                      className={`p-3 rounded-lg space-y-2 shadow-crystal bg-white/10 backdrop-blur-living`}
                     >
                       <div className="flex items-center gap-2">
-                        <Route
-                          className={`h-4 w-4 ${currentRoute.isRealRoute ? "text-blue-600" : "text-yellow-600"}`}
-                        />
-                        <span
-                          className={`text-sm font-medium ${currentRoute.isRealRoute ? "text-blue-900" : "text-yellow-900"}`}
-                        >
+                        <Route className="h-4 w-4 text-white" />
+                        <span className="text-sm font-medium text-white">
                           {currentRoute.isRealRoute ? "Campus Route" : "Simulated Route"}
                         </span>
-                        {!currentRoute.isRealRoute && <AlertTriangle className="h-4 w-4 text-yellow-600" />}
+                        {!currentRoute.isRealRoute && <AlertTriangle className="h-4 w-4 text-white" />}
                       </div>
                       <div className="grid grid-cols-2 gap-2 text-xs">
                         <div>
-                          <span className={currentRoute.isRealRoute ? "text-blue-700" : "text-yellow-700"}>
-                            Distance:
-                          </span>
-                          <p
-                            className={`font-medium ${currentRoute.isRealRoute ? "text-blue-900" : "text-yellow-900"}`}
-                          >
+                          <span className="text-white">Distance:</span>
+                          <p className="font-medium text-white">
                             {formatDistance(currentRoute.distance)}
                           </p>
                         </div>
                         <div>
-                          <span className={currentRoute.isRealRoute ? "text-blue-700" : "text-yellow-700"}>Time:</span>
-                          <p
-                            className={`font-medium ${currentRoute.isRealRoute ? "text-blue-900" : "text-yellow-900"}`}
-                          >
+                          <span className="text-white">Time:</span>
+                          <p className="font-medium text-white">
                             {formatDuration(currentRoute.duration)}
                           </p>
                         </div>
                       </div>
-                      <p className={`text-xs ${currentRoute.isRealRoute ? "text-blue-700" : "text-yellow-700"}`}>
+                      <p className={`text-xs text-white`}>
                         {currentRoute.isRealRoute ? "Follow the path on the map" : "Approximate campus route"}
                       </p>
                     </div>
@@ -472,7 +529,7 @@ export default function CampusNavigator() {
                 <CardHeader>
                   <CardTitle className="flex items-center gap-2 neon-text-living">
                     {(() => {
-                      const Icon = categoryIcons[selectedBuilding.category]
+                      const Icon = categoryIcons[selectedBuilding.category as keyof typeof categoryIcons]
                       return <Icon className="h-5 w-5" />
                     })()}
                     {selectedBuilding.name}
@@ -480,7 +537,7 @@ export default function CampusNavigator() {
                   <CardDescription>{selectedBuilding.description}</CardDescription>
                 </CardHeader>
                 <CardContent className="space-y-4">
-                  <Badge style={{ backgroundColor: categoryColors[selectedBuilding.category] }} className="text-white shadow-crystal glow-living-primary">
+                  <Badge style={{ backgroundColor: categoryColors[selectedBuilding.category as keyof typeof categoryColors] }} className="text-white shadow-crystal glow-living-primary">
                     {selectedBuilding.category}
                   </Badge>
 
@@ -619,10 +676,10 @@ export default function CampusNavigator() {
               <CardContent className="pt-6">
                 <div className="flex flex-wrap gap-4">
                   {categories.map((category) => {
-                    const Icon = categoryIcons[category]
+                    const Icon = categoryIcons[category as keyof typeof categoryIcons]
                     return (
                       <div key={category} className="flex items-center gap-2">
-                        <div className="w-4 h-4 rounded-full shadow-crystal" style={{ backgroundColor: categoryColors[category] }} />
+                        <div className="w-4 h-4 rounded-full shadow-crystal" style={{ backgroundColor: categoryColors[category as keyof typeof categoryColors] }} />
                         <Icon className="h-4 w-4" />
                         <span className="text-sm capitalize">{category}</span>
                       </div>

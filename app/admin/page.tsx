@@ -23,6 +23,16 @@ import { createBuilding, updateBuilding, deleteBuilding } from "@/lib/actions"
 
 const categories = ["academic", "residential", "dining", "recreation", "administrative", "parking", "outdoor"]
 
+const categoryColors = {
+  academic: "#3b82f6", // Blue for academic buildings
+  residential: "#10b981", // Green for hostels
+  dining: "#f59e0b", // Orange for dining
+  recreation: "#8b5cf6", // Purple for sports/recreation
+  administrative: "#ef4444", // Red for admin buildings
+  parking: "#6b7280", // Gray for parking
+  outdoor: "#22c55e", // Light green for outdoor spaces
+}
+
 export default function AdminPage() {
   const [buildings, setBuildings] = useState([])
   const [error, setError] = useState(null)
