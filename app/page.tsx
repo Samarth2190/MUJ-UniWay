@@ -176,6 +176,7 @@ export default function CampusNavigator() {
     fetchBuildings();
   }, [selectedCategory, searchQuery]);
 
+
   const categories = useMemo(() => {
     if (!Array.isArray(buildings)) return [];
     return [...new Set(buildings.map((b) => b.category))];
@@ -184,6 +185,7 @@ export default function CampusNavigator() {
   const handleBuildingClick = (building: Building) => {
     setSelectedBuilding(building);
   };
+
 
   const handleLocationUpdate = (location: LocationCoordinates) => {
     setCurrentLocation(location);
@@ -353,10 +355,13 @@ export default function CampusNavigator() {
     return (
       <div className="min-h-screen living-bg particle-bg flex items-center justify-center">
         <div className="text-center">
-          <div className="text-red-500 text-6xl mb-4">⚠️</div>
-          <h2 className="text-2xl font-bold mb-2">Error Loading Campus Map</h2>
+          <div className="relative mb-4">
+            <div className="text-red-500 text-6xl mb-4 shadow-glow-danger">⚠️</div>
+            <div className="absolute inset-0 bg-gradient-to-r from-red-400/20 to-orange-400/20 rounded-full blur-xl"></div>
+          </div>
+          <h2 className="text-2xl font-bold mb-2 bg-gradient-to-r from-red-600 to-orange-600 bg-clip-text text-transparent">Error Loading Campus Map</h2>
           <p className="text-muted-foreground mb-4">{error}</p>
-          <Button onClick={() => window.location.reload()}>Try Again</Button>
+          <Button onClick={() => window.location.reload()} className="shadow-glow-danger">Try Again</Button>
         </div>
       </div>
     );
@@ -420,13 +425,16 @@ export default function CampusNavigator() {
               {/* <div className="relative">
                 <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
                 <Input
+                  ref={searchInputRef}
                   placeholder="Search buildings, hostels, facilities..."
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
                   className="pl-10 w-80 shadow-crystal-medium backdrop-blur-living glass-input-living"
+
                 />
               </div> */}
               <Button
+                type="button"
                 variant="outline"
                 size="sm"
                 onClick={() =>
@@ -612,7 +620,6 @@ export default function CampusNavigator() {
                           </div>
                         </div>
                       )}
-
                     <Button
                       onClick={clearNavigation}
                       variant="outline"

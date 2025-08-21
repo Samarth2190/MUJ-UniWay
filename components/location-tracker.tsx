@@ -158,10 +158,10 @@ export default function LocationTracker({
   return (
     <div className="space-y-4">
       {/* Location Status Card */}
-      <Card>
+      <Card className="glass-effect">
         <CardHeader>
-          <CardTitle className="flex items-center gap-2">
-            <MapPin className="h-5 w-5" />
+          <CardTitle className="flex items-center gap-3 text-lg font-semibold">
+            <div className="p-2 rounded-lg bg-primary/10"><MapPin className="h-5 w-5 text-primary" /></div>
             Live Location
           </CardTitle>
           <CardDescription>
@@ -190,7 +190,7 @@ export default function LocationTracker({
 
             <Dialog open={isSettingsOpen} onOpenChange={setIsSettingsOpen}>
               <DialogTrigger asChild>
-                <Button variant="outline" size="sm">
+                <Button variant="outline" size="sm" className="h-11 font-medium">
                   <Settings className="h-4 w-4 mr-2" />
                   Settings
                 </Button>
@@ -205,7 +205,7 @@ export default function LocationTracker({
                 <div className="space-y-6">
                   {/* Voice Settings */}
                   <div className="space-y-4">
-                    <h4 className="font-medium">Voice Guidance</h4>
+                    <h4 className="font-semibold">Voice Guidance</h4>
 
                     <div className="flex items-center justify-between">
                       <Label htmlFor="voice-enabled">Enable Voice</Label>
@@ -261,12 +261,12 @@ export default function LocationTracker({
                             className="w-full"
                           />
                         </div>
-
                         <Button
                           onClick={testVoice}
                           variant="outline"
                           className="w-full bg-transparent"
                         >
+
                           <Volume2 className="h-4 w-4 mr-2" />
                           Test Voice
                         </Button>
@@ -280,9 +280,9 @@ export default function LocationTracker({
 
           {/* Location Error */}
           {locationError && (
-            <div className="flex items-center gap-2 p-3 bg-red-50 border border-red-200 rounded-lg">
+            <div className="flex items-center gap-3 p-4 bg-red-50/50 border border-red-200/50 rounded-xl dark:bg-red-950/30 dark:border-red-800/30">
               <AlertTriangle className="h-4 w-4 text-red-600" />
-              <span className="text-sm text-red-700">{locationError}</span>
+              <span className="text-sm text-red-700 dark:text-red-300 font-medium">{locationError}</span>
             </div>
           )}
 
@@ -300,7 +300,7 @@ export default function LocationTracker({
 
           {/* Current Location Info */}
           {currentLocation && (
-            <div className="grid grid-cols-2 gap-4 text-sm">
+            <div className="grid grid-cols-2 gap-4 text-sm p-4 bg-muted/30 rounded-xl">
               <div>
                 <Label className="text-muted-foreground">Coordinates</Label>
                 <p className="font-mono">
@@ -309,7 +309,7 @@ export default function LocationTracker({
                 </p>
               </div>
               <div>
-                <Label className="text-muted-foreground">Accuracy</Label>
+                <Label className="text-muted-foreground font-medium">Accuracy</Label>
                 <div className="flex items-center gap-2">
                   <div
                     className={`w-2 h-2 rounded-full ${getAccuracyColor(
@@ -321,17 +321,17 @@ export default function LocationTracker({
               </div>
               {currentLocation.heading !== undefined && (
                 <div>
-                  <Label className="text-muted-foreground">Heading</Label>
+                  <Label className="text-muted-foreground font-medium">Heading</Label>
                   <div className="flex items-center gap-2">
                     <Compass className="h-4 w-4" />
-                    <span>{Math.round(currentLocation.heading)}°</span>
+                    <span className="font-medium">{Math.round(currentLocation.heading)}°</span>
                   </div>
                 </div>
               )}
               {currentLocation.speed !== undefined && (
                 <div>
-                  <Label className="text-muted-foreground">Speed</Label>
-                  <span>{getSpeedKmh(currentLocation.speed)} km/h</span>
+                  <Label className="text-muted-foreground font-medium">Speed</Label>
+                  <span className="font-medium">{getSpeedKmh(currentLocation.speed)} km/h</span>
                 </div>
               )}
             </div>
@@ -355,18 +355,18 @@ export default function LocationTracker({
 
       {/* Navigation Status Card */}
       {navigationState && (
-        <Card>
+        <Card className="glass-effect border-primary/20">
           <CardHeader>
-            <CardTitle className="flex items-center gap-2">
-              <Navigation className="h-5 w-5" />
+            <CardTitle className="flex items-center gap-3 text-lg font-semibold">
+              <div className="p-2 rounded-lg bg-primary/10"><Navigation className="h-5 w-5 text-primary" /></div>
               Active Navigation
               {navigationState.isOffRoute && (
-                <Badge variant="destructive" className="ml-2">
+                <Badge variant="destructive" className="ml-2 font-medium">
                   Off Route
                 </Badge>
               )}
               {navigationState.recalculatingRoute && (
-                <Badge variant="secondary" className="ml-2">
+                <Badge variant="secondary" className="ml-2 font-medium">
                   Recalculating...
                 </Badge>
               )}
@@ -374,9 +374,9 @@ export default function LocationTracker({
           </CardHeader>
           <CardContent className="space-y-4">
             {/* Next Instruction */}
-            <div className="p-3 bg-blue-50 border border-blue-200 rounded-lg">
+            <div className="p-4 bg-blue-50/50 border border-blue-200/50 rounded-xl dark:bg-blue-950/30 dark:border-blue-800/30">
               <div className="flex items-start gap-2">
-                <Route className="h-5 w-5 text-blue-600 mt-0.5" />
+                <Route className="h-5 w-5 text-blue-600 mt-1" />
                 <div>
                   <p className="font-medium text-blue-900">
                     {navigationState.nextInstruction}
@@ -390,7 +390,7 @@ export default function LocationTracker({
             </div>
 
             {/* Navigation Stats */}
-            <div className="grid grid-cols-2 gap-4 text-sm">
+            <div className="grid grid-cols-2 gap-4 text-sm p-4 bg-muted/30 rounded-xl">
               <div>
                 <Label className="text-muted-foreground">
                   Remaining Distance
@@ -403,7 +403,7 @@ export default function LocationTracker({
                 </div>
               </div>
               <div>
-                <Label className="text-muted-foreground">Estimated Time</Label>
+                <Label className="text-muted-foreground font-medium">Estimated Time</Label>
                 <div className="flex items-center gap-2">
                   <Clock className="h-4 w-4" />
                   <span className="font-medium">
@@ -414,7 +414,7 @@ export default function LocationTracker({
             </div>
 
             {/* Voice Status */}
-            <div className="flex items-center justify-between">
+            <div className="flex items-center justify-between p-3 bg-muted/20 rounded-lg">
               <div className="flex items-center gap-2">
                 {voiceSettings.enabled ? (
                   <Volume2 className="h-4 w-4 text-green-600" />
@@ -426,7 +426,7 @@ export default function LocationTracker({
                   {voiceSettings.enabled ? "enabled" : "disabled"}
                 </span>
               </div>
-              <Button onClick={stopNavigation} variant="destructive" size="sm">
+              <Button onClick={stopNavigation} variant="destructive" size="sm" className="font-medium">
                 <Square className="h-4 w-4 mr-2" />
                 Stop Navigation
               </Button>

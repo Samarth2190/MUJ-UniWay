@@ -146,26 +146,28 @@ export default function AdminPage() {
   }
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-gradient-to-br from-background via-background to-muted/30">
       {/* Header */}
       <header className="border-b bg-white/95 backdrop-blur supports-[backdrop-filter]:bg-white/60 gradient-living-header z-10 sticky top-0">
         <div className="container mx-auto px-4 py-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-4">
               <Link href="/">
-                <Button variant="ghost" size="sm">
+                <Button variant="ghost" size="sm" className="font-medium">
                   <ArrowLeft className="h-4 w-4 mr-2" />
                   Back to Map
                 </Button>
               </Link>
-              <div className="flex items-center gap-2">
-                <MapPin className="h-6 w-6 text-primary" />
-                <h1 className="text-2xl font-bold">Campus Admin</h1>
+              <div className="flex items-center gap-3">
+                <div className="p-2 rounded-xl bg-primary/10 border border-primary/20">
+                  <MapPin className="h-6 w-6 text-primary" />
+                </div>
+                <h1 className="text-2xl font-bold gradient-text">Campus Admin</h1>
               </div>
             </div>
             <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
               <DialogTrigger asChild>
-                <Button onClick={openCreateDialog}>
+                <Button onClick={openCreateDialog} className="h-11 font-medium">
                   <Plus className="h-4 w-4 mr-2" />
                   Add Building
                 </Button>
@@ -307,7 +309,7 @@ export default function AdminPage() {
                     <Button type="button" variant="outline" onClick={() => setIsDialogOpen(false)}>
                       Cancel
                     </Button>
-                    <Button type="submit">{editingBuilding ? "Update Building" : "Add Building"}</Button>
+                    <Button type="submit" className="font-medium">{editingBuilding ? "Update Building" : "Add Building"}</Button>
                   </div>
                 </form>
               </DialogContent>
@@ -315,14 +317,14 @@ export default function AdminPage() {
           </div>
         </div>
       </header>
-
       <div className="container mx-auto px-4 py-6 m-4">
         <Card>
+
           <CardHeader>
-            <CardTitle>Buildings Management</CardTitle>
+            <CardTitle className="text-xl font-semibold gradient-text">Buildings Management</CardTitle>
             <CardDescription>Manage campus buildings and their information</CardDescription>
           </CardHeader>
-          <CardContent>
+          <CardContent className="p-0">
             <Table>
               <TableHeader>
                 <TableRow>
@@ -337,9 +339,9 @@ export default function AdminPage() {
               <TableBody>
                 {buildings.map((building) => (
                   <TableRow key={building.id}>
-                    <TableCell className="font-medium">{building.name}</TableCell>
+                    <TableCell className="font-semibold">{building.name}</TableCell>
                     <TableCell>
-                      <Badge variant="secondary">{building.category}</Badge>
+                      <Badge variant="secondary" className="font-medium">{building.category}</Badge>
                     </TableCell>
                     <TableCell className="max-w-xs truncate">{building.description}</TableCell>
                     <TableCell className="text-xs">
@@ -350,12 +352,12 @@ export default function AdminPage() {
                     <TableCell>
                       <div className="flex flex-wrap gap-1">
                         {building.services?.slice(0, 2).map((service) => (
-                          <Badge key={service} variant="outline" className="text-xs">
+                          <Badge key={service} variant="outline" className="text-xs font-medium">
                             {service}
                           </Badge>
                         ))}
                         {building.services?.length > 2 && (
-                          <Badge variant="outline" className="text-xs">
+                          <Badge variant="outline" className="text-xs font-medium">
                             +{building.services.length - 2}
                           </Badge>
                         )}
@@ -363,10 +365,10 @@ export default function AdminPage() {
                     </TableCell>
                     <TableCell>
                       <div className="flex gap-2">
-                        <Button size="sm" variant="outline" onClick={() => openEditDialog(building)}>
+                        <Button size="sm" variant="outline" onClick={() => openEditDialog(building)} className="font-medium">
                           <Edit className="h-4 w-4" />
                         </Button>
-                        <Button size="sm" variant="outline" onClick={() => handleDelete(building.id)}>
+                        <Button size="sm" variant="outline" onClick={() => handleDelete(building.id)} className="font-medium">
                           <Trash2 className="h-4 w-4" />
                         </Button>
                       </div>

@@ -12,6 +12,8 @@
 
 **A modern, responsive web application designed specifically for Manipal University Jaipur students and visitors. It provides comprehensive campus navigation with real-time location tracking, interactive maps, and smart routing for seamless campus exploration and enhanced student experience**
 
+[Click Here to Checkout the UI !](#sc)
+
 </div>
 
 
@@ -137,18 +139,23 @@ MUJ-UniWay/
 
 ---
 
-## 🖼️ Screenshots
-
-> **Note:** Add your application screenshots here to showcase the UI and features
-
-### 🏠 Home Dashboard
-*[Add screenshot of the main dashboard]*
+## <a id="sc"></a>`🖼️Screenshots`
 
 ### 🗺️ Interactive Campus Map  
-*[Add screenshot of the campus map feature]*
+![UniWay banner](./assets/ss1.jpg)
 
-### 📱 Mobile Experience
-*[Add screenshot of mobile responsive design]*
+### Admin Section
+![UniWay banner](./assets/ss2.jpg)
+
+### Navigation Voice Settings
+![UniWay banner](./assets/ss3.jpg)
+
+### Live Navigation with Voice Diretions & ETA Support
+![UniWay banner](./assets/ss4.jpg)
+
+### Satellite view
+![UniWay banner](./assets/ss5.jpg)
+
 
 ---
 
