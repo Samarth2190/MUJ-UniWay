@@ -35,6 +35,7 @@ import LocationTracker from "@/components/location-tracker"
 import { LocationSelector } from "@/components/location-selector"
 import type { LocationCoordinates } from "@/lib/geolocation"
 import { type NavigationState, navigationService } from "@/lib/navigation"
+import { locationService } from "@/lib/geolocation"
 
 // Dynamically import the map component to avoid SSR issues
 const CampusMap = dynamic(() => import("@/components/campus-map"), {
@@ -113,6 +114,7 @@ export default function CampusNavigator() {
   const [currentLocation, setCurrentLocation] = useState<LocationCoordinates | null>(null)
   const [navigationState, setNavigationState] = useState<NavigationState | null>(null)
   const [useCurrentLocationAsStart, setUseCurrentLocationAsStart] = useState(false)
+  const [pendingLocationSelection, setPendingLocationSelection] = useState(false)
 
   // Fetch buildings from API
   useEffect(() => {
@@ -167,6 +169,13 @@ export default function CampusNavigator() {
 
   const handleLocationUpdate = (location: LocationCoordinates) => {
     setCurrentLocation(location)
+    
+    // If user was waiting for location to be available, set it as starting point
+    if (pendingLocationSelection) {
+      const myLocationBuilding = createMyLocationBuilding(location)
+      setNavigationFrom(myLocationBuilding)
+      setPendingLocationSelection(false)
+    }
   }
 
   const handleNavigationStateChange = (state: NavigationState | null) => {
@@ -269,6 +278,23 @@ export default function CampusNavigator() {
     }
   }
 
+  // Start location tracking
+  const startLocationTracking = async () => {
+    try {
+      setPendingLocationSelection(true)
+      // Get initial position
+      const location = await locationService.getCurrentPosition()
+      setCurrentLocation(location)
+      
+      // Start watching for updates
+      locationService.startWatching()
+    } catch (error) {
+      console.error("Failed to start location tracking:", error)
+      alert("Failed to start location tracking. Please ensure location access is enabled.")
+      setPendingLocationSelection(false)
+    }
+  }
+
   // Update navigation when current location changes and we're using it as start
   useEffect(() => {
     if (useCurrentLocationAsStart && currentLocation && navigationTo) {
@@ -325,6 +351,7 @@ export default function CampusNavigator() {
                 buildings={buildings}
                 currentLocation={currentLocation}
                 allowCurrentLocation={true}
+                onStartLocationTracking={startLocationTracking}
                 className="flex-1"
               />
               <ArrowRight className="h-4 w-4 text-muted-foreground" />

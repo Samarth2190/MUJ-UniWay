@@ -44,6 +44,7 @@ interface LocationSelectorProps {
   buildings: Building[]
   currentLocation: LocationCoordinates | null
   allowCurrentLocation?: boolean
+  onStartLocationTracking?: () => void
   className?: string
 }
 
@@ -65,6 +66,7 @@ export function LocationSelector({
   buildings,
   currentLocation,
   allowCurrentLocation = false,
+  onStartLocationTracking,
   className,
 }: LocationSelectorProps) {
   const [open, setOpen] = useState(false)
@@ -84,10 +86,18 @@ export function LocationSelector({
     hours: "24/7",
   })
 
-  const handleSelect = (selectedValue: string) => {
-    if (selectedValue === "current-location" && currentLocation) {
-      const myLocationBuilding = createMyLocationBuilding(currentLocation)
-      onValueChange(myLocationBuilding)
+  const handleSelect = async (selectedValue: string) => {
+    if (selectedValue === "current-location") {
+      if (currentLocation) {
+        // Location is already available
+        const myLocationBuilding = createMyLocationBuilding(currentLocation)
+        onValueChange(myLocationBuilding)
+      } else if (onStartLocationTracking) {
+        // Start location tracking and wait for the location to be available
+        onStartLocationTracking()
+        // Don't set a temporary building - let the parent component handle the location update
+        // The location will be updated via the onLocationUpdate callback
+      }
     } else {
       // Extract the building ID from the end of the value string
       const buildingId = selectedValue.split(' ').pop()
@@ -146,7 +156,7 @@ export function LocationSelector({
               <CommandEmpty>No building found.</CommandEmpty>
               
               {/* Current Location Option */}
-              {allowCurrentLocation && currentLocation && (
+              {allowCurrentLocation && (
                 <CommandGroup>
                   <CommandItem
                     value="current-location"
@@ -156,10 +166,12 @@ export function LocationSelector({
                     <Crosshair className="mr-2 h-4 w-4 text-blue-600" />
                     <div className="flex flex-col">
                       <span className="font-medium">My Location</span>
-                      <span className="text-xs text-muted-foreground">Use your current GPS position</span>
+                      <span className="text-xs text-muted-foreground">
+                        {currentLocation ? "Use your current GPS position" : "Start location tracking to use your position"}
+                      </span>
                     </div>
                     <Badge variant="secondary" className="ml-auto text-xs">
-                      Live GPS
+                      {currentLocation ? "Live GPS" : "Enable GPS"}
                     </Badge>
                   </CommandItem>
                 </CommandGroup>
