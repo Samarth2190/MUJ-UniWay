@@ -1,12 +1,18 @@
-"use client"
+"use client";
 
-import { useEffect, useState } from "react"
-import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { Badge } from "@/components/ui/badge"
-import { Switch } from "@/components/ui/switch"
-import { Label } from "@/components/ui/label"
-import { Slider } from "@/components/ui/slider"
+import { useEffect, useState } from "react";
+import { Button } from "@/components/ui/button";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import { Switch } from "@/components/ui/switch";
+import { Label } from "@/components/ui/label";
+import { Slider } from "@/components/ui/slider";
 import {
   Dialog,
   DialogContent,
@@ -14,7 +20,7 @@ import {
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-} from "@/components/ui/dialog"
+} from "@/components/ui/dialog";
 import {
   MapPin,
   Navigation,
@@ -28,115 +34,126 @@ import {
   AlertTriangle,
   Play,
   Square,
-} from "lucide-react"
-import { type LocationCoordinates, locationService } from "@/lib/geolocation"
-import { type NavigationState, navigationService } from "@/lib/navigation"
-import { formatDistance, formatDuration } from "@/lib/routing"
+} from "lucide-react";
+import { type LocationCoordinates, locationService } from "@/lib/geolocation";
+import { type NavigationState, navigationService } from "@/lib/navigation";
+import { formatDistance, formatDuration } from "@/lib/routing";
 
 interface LocationTrackerProps {
-  onLocationUpdate?: (location: LocationCoordinates) => void
-  onNavigationStateChange?: (state: NavigationState | null) => void
+  onLocationUpdate?: (location: LocationCoordinates) => void;
+  onNavigationStateChange?: (state: NavigationState | null) => void;
 }
 
-export default function LocationTracker({ onLocationUpdate, onNavigationStateChange }: LocationTrackerProps) {
-  const [currentLocation, setCurrentLocation] = useState<LocationCoordinates | null>(null)
-  const [locationError, setLocationError] = useState<string | null>(null)
-  const [isTracking, setIsTracking] = useState(false)
-  const [navigationState, setNavigationState] = useState<NavigationState | null>(null)
-  const [voiceSettings, setVoiceSettings] = useState(navigationService.getVoiceSettings())
-  const [isSettingsOpen, setIsSettingsOpen] = useState(false)
-  const [availableVoices, setAvailableVoices] = useState<SpeechSynthesisVoice[]>([])
+export default function LocationTracker({
+  onLocationUpdate,
+  onNavigationStateChange,
+}: LocationTrackerProps) {
+  const [currentLocation, setCurrentLocation] =
+    useState<LocationCoordinates | null>(null);
+  const [locationError, setLocationError] = useState<string | null>(null);
+  const [isTracking, setIsTracking] = useState(false);
+  const [navigationState, setNavigationState] =
+    useState<NavigationState | null>(null);
+  const [voiceSettings, setVoiceSettings] = useState(
+    navigationService.getVoiceSettings()
+  );
+  const [isSettingsOpen, setIsSettingsOpen] = useState(false);
+  const [availableVoices, setAvailableVoices] = useState<
+    SpeechSynthesisVoice[]
+  >([]);
 
   // Initialize location tracking
   useEffect(() => {
     // Load available voices
     const loadVoices = () => {
-      setAvailableVoices(navigationService.getAvailableVoices())
-    }
+      setAvailableVoices(navigationService.getAvailableVoices());
+    };
 
-    loadVoices()
+    loadVoices();
     if (speechSynthesis.onvoiceschanged !== undefined) {
-      speechSynthesis.onvoiceschanged = loadVoices
+      speechSynthesis.onvoiceschanged = loadVoices;
     }
 
     // Subscribe to location updates
     const unsubscribeLocation = locationService.onLocationUpdate((location) => {
-      setCurrentLocation(location)
-      setLocationError(null)
-      onLocationUpdate?.(location)
-    })
+      setCurrentLocation(location);
+      setLocationError(null);
+      onLocationUpdate?.(location);
+    });
 
     // Subscribe to location errors
     const unsubscribeError = locationService.onLocationError((error) => {
-      setLocationError(error.message)
-      setIsTracking(false)
-    })
+      setLocationError(error.message);
+      setIsTracking(false);
+    });
 
     // Subscribe to navigation state changes
     const unsubscribeNavigation = navigationService.onStateChange((state) => {
-      setNavigationState(state)
-      onNavigationStateChange?.(state)
-    })
+      setNavigationState(state);
+      onNavigationStateChange?.(state);
+    });
 
     return () => {
-      unsubscribeLocation()
-      unsubscribeError()
-      unsubscribeNavigation()
-    }
-  }, [onLocationUpdate, onNavigationStateChange])
+      unsubscribeLocation();
+      unsubscribeError();
+      unsubscribeNavigation();
+    };
+  }, [onLocationUpdate, onNavigationStateChange]);
 
   // Start/stop location tracking
   const toggleTracking = async () => {
     if (isTracking) {
-      locationService.stopWatching()
-      setIsTracking(false)
+      locationService.stopWatching();
+      setIsTracking(false);
     } else {
       try {
         // Get initial position
-        const location = await locationService.getCurrentPosition()
-        setCurrentLocation(location)
-        setLocationError(null)
+        const location = await locationService.getCurrentPosition();
+        setCurrentLocation(location);
+        setLocationError(null);
 
         // Start watching
-        locationService.startWatching()
-        setIsTracking(true)
+        locationService.startWatching();
+        setIsTracking(true);
       } catch (error: any) {
-        setLocationError(error.message)
-        setIsTracking(false)
+        setLocationError(error.message);
+        setIsTracking(false);
       }
     }
-  }
+  };
 
   // Stop navigation
   const stopNavigation = () => {
-    navigationService.stopNavigation()
-    setNavigationState(null)
-  }
+    navigationService.stopNavigation();
+    setNavigationState(null);
+  };
 
   // Update voice settings
   const updateVoiceSettings = (key: string, value: any) => {
-    const newSettings = { ...voiceSettings, [key]: value }
-    setVoiceSettings(newSettings)
-    navigationService.updateVoiceSettings(newSettings)
-  }
+    const newSettings = { ...voiceSettings, [key]: value };
+    setVoiceSettings(newSettings);
+    navigationService.updateVoiceSettings(newSettings);
+  };
 
   // Test voice
   const testVoice = () => {
-    navigationService.testVoice("This is a test of the navigation voice system")
-  }
+    navigationService.testVoice(
+      "This is a test of the navigation voice system"
+    );
+  };
 
   // Get location accuracy badge color
   const getAccuracyColor = (accuracy: number) => {
-    if (accuracy <= 5) return "bg-green-500"
-    if (accuracy <= 10) return "bg-yellow-500"
-    return "bg-red-500"
-  }
+    if (accuracy <= 5) return "bg-green-500";
+    if (accuracy <= 10) return "bg-yellow-500";
+    return "bg-red-500";
+  };
 
   // Get speed in km/h
   const getSpeedKmh = (speed?: number) => {
-    if (!speed) return 0
-    return Math.round(speed * 3.6 * 10) / 10
-  }
+    if (!speed) return 0;
+    return Math.round(speed * 3.6 * 10) / 10;
+  };
 
   return (
     <div className="space-y-4">
@@ -147,12 +164,17 @@ export default function LocationTracker({ onLocationUpdate, onNavigationStateCha
             <MapPin className="h-5 w-5" />
             Live Location
           </CardTitle>
-          <CardDescription>Real-time GPS tracking and navigation</CardDescription>
+          <CardDescription>
+            Real-time GPS tracking and navigation
+          </CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">
           {/* Location Controls */}
           <div className="flex items-center justify-between">
-            <Button onClick={toggleTracking} variant={isTracking ? "destructive" : "default"}>
+            <Button
+              onClick={toggleTracking}
+              variant={isTracking ? "destructive" : "default"}
+            >
               {isTracking ? (
                 <>
                   <Square className="h-4 w-4 mr-2" />
@@ -176,7 +198,9 @@ export default function LocationTracker({ onLocationUpdate, onNavigationStateCha
               <DialogContent>
                 <DialogHeader>
                   <DialogTitle>Navigation Settings</DialogTitle>
-                  <DialogDescription>Configure voice guidance and location settings</DialogDescription>
+                  <DialogDescription>
+                    Configure voice guidance and location settings
+                  </DialogDescription>
                 </DialogHeader>
                 <div className="space-y-6">
                   {/* Voice Settings */}
@@ -188,7 +212,9 @@ export default function LocationTracker({ onLocationUpdate, onNavigationStateCha
                       <Switch
                         id="voice-enabled"
                         checked={voiceSettings.enabled}
-                        onCheckedChange={(checked) => updateVoiceSettings("enabled", checked)}
+                        onCheckedChange={(checked) =>
+                          updateVoiceSettings("enabled", checked)
+                        }
                       />
                     </div>
 
@@ -198,7 +224,9 @@ export default function LocationTracker({ onLocationUpdate, onNavigationStateCha
                           <Label>Voice Volume</Label>
                           <Slider
                             value={[voiceSettings.volume]}
-                            onValueChange={([value]) => updateVoiceSettings("volume", value)}
+                            onValueChange={([value]) =>
+                              updateVoiceSettings("volume", value)
+                            }
                             max={1}
                             min={0}
                             step={0.1}
@@ -210,7 +238,9 @@ export default function LocationTracker({ onLocationUpdate, onNavigationStateCha
                           <Label>Speech Rate</Label>
                           <Slider
                             value={[voiceSettings.rate]}
-                            onValueChange={([value]) => updateVoiceSettings("rate", value)}
+                            onValueChange={([value]) =>
+                              updateVoiceSettings("rate", value)
+                            }
                             max={2}
                             min={0.5}
                             step={0.1}
@@ -222,7 +252,9 @@ export default function LocationTracker({ onLocationUpdate, onNavigationStateCha
                           <Label>Voice Pitch</Label>
                           <Slider
                             value={[voiceSettings.pitch]}
-                            onValueChange={([value]) => updateVoiceSettings("pitch", value)}
+                            onValueChange={([value]) =>
+                              updateVoiceSettings("pitch", value)
+                            }
                             max={2}
                             min={0.5}
                             step={0.1}
@@ -230,7 +262,11 @@ export default function LocationTracker({ onLocationUpdate, onNavigationStateCha
                           />
                         </div>
 
-                        <Button onClick={testVoice} variant="outline" className="w-full bg-transparent">
+                        <Button
+                          onClick={testVoice}
+                          variant="outline"
+                          className="w-full bg-transparent"
+                        >
                           <Volume2 className="h-4 w-4 mr-2" />
                           Test Voice
                         </Button>
@@ -255,8 +291,9 @@ export default function LocationTracker({ onLocationUpdate, onNavigationStateCha
             <div className="flex items-center gap-2 p-3 bg-yellow-50 border border-yellow-200 rounded-lg">
               <AlertTriangle className="h-4 w-4 text-yellow-700" />
               <span className="text-sm text-yellow-800">
-                Low GPS accuracy (±{Math.round(currentLocation.accuracy)}m). For better results, move outdoors,
-                enable Wi‑Fi/Bluetooth, and disable battery saver.
+                Low GPS accuracy (±{Math.round(currentLocation.accuracy)}m). For
+                better results, move outdoors, enable Wi‑Fi/Bluetooth, and
+                disable battery saver.
               </span>
             </div>
           )}
@@ -267,13 +304,18 @@ export default function LocationTracker({ onLocationUpdate, onNavigationStateCha
               <div>
                 <Label className="text-muted-foreground">Coordinates</Label>
                 <p className="font-mono">
-                  {currentLocation.lat.toFixed(6)}, {currentLocation.lng.toFixed(6)}
+                  {currentLocation.lat.toFixed(6)},{" "}
+                  {currentLocation.lng.toFixed(6)}
                 </p>
               </div>
               <div>
                 <Label className="text-muted-foreground">Accuracy</Label>
                 <div className="flex items-center gap-2">
-                  <div className={`w-2 h-2 rounded-full ${getAccuracyColor(currentLocation.accuracy)}`} />
+                  <div
+                    className={`w-2 h-2 rounded-full ${getAccuracyColor(
+                      currentLocation.accuracy
+                    )}`}
+                  />
                   <span>{Math.round(currentLocation.accuracy)}m</span>
                 </div>
               </div>
@@ -297,9 +339,15 @@ export default function LocationTracker({ onLocationUpdate, onNavigationStateCha
 
           {/* Tracking Status */}
           <div className="flex items-center gap-2">
-            <div className={`w-2 h-2 rounded-full ${isTracking ? "bg-green-500" : "bg-gray-400"}`} />
+            <div
+              className={`w-2 h-2 rounded-full ${
+                isTracking ? "bg-green-500" : "bg-gray-400"
+              }`}
+            />
             <span className="text-sm text-muted-foreground">
-              {isTracking ? "Location tracking active" : "Location tracking inactive"}
+              {isTracking
+                ? "Location tracking active"
+                : "Location tracking inactive"}
             </span>
           </div>
         </CardContent>
@@ -330,9 +378,12 @@ export default function LocationTracker({ onLocationUpdate, onNavigationStateCha
               <div className="flex items-start gap-2">
                 <Route className="h-5 w-5 text-blue-600 mt-0.5" />
                 <div>
-                  <p className="font-medium text-blue-900">{navigationState.nextInstruction}</p>
+                  <p className="font-medium text-blue-900">
+                    {navigationState.nextInstruction}
+                  </p>
                   <p className="text-sm text-blue-700">
-                    Step {navigationState.currentStep + 1} of {navigationState.totalSteps}
+                    Step {navigationState.currentStep + 1} of{" "}
+                    {navigationState.totalSteps}
                   </p>
                 </div>
               </div>
@@ -341,17 +392,23 @@ export default function LocationTracker({ onLocationUpdate, onNavigationStateCha
             {/* Navigation Stats */}
             <div className="grid grid-cols-2 gap-4 text-sm">
               <div>
-                <Label className="text-muted-foreground">Remaining Distance</Label>
+                <Label className="text-muted-foreground">
+                  Remaining Distance
+                </Label>
                 <div className="flex items-center gap-2">
                   <Target className="h-4 w-4" />
-                  <span className="font-medium">{formatDistance(navigationState.remainingDistance)}</span>
+                  <span className="font-medium">
+                    {formatDistance(navigationState.remainingDistance)}
+                  </span>
                 </div>
               </div>
               <div>
                 <Label className="text-muted-foreground">Estimated Time</Label>
                 <div className="flex items-center gap-2">
                   <Clock className="h-4 w-4" />
-                  <span className="font-medium">{formatDuration(navigationState.remainingTime)}</span>
+                  <span className="font-medium">
+                    {formatDuration(navigationState.remainingTime)}
+                  </span>
                 </div>
               </div>
             </div>
@@ -365,7 +422,8 @@ export default function LocationTracker({ onLocationUpdate, onNavigationStateCha
                   <VolumeX className="h-4 w-4 text-gray-400" />
                 )}
                 <span className="text-sm text-muted-foreground">
-                  Voice guidance {voiceSettings.enabled ? "enabled" : "disabled"}
+                  Voice guidance{" "}
+                  {voiceSettings.enabled ? "enabled" : "disabled"}
                 </span>
               </div>
               <Button onClick={stopNavigation} variant="destructive" size="sm">
@@ -377,5 +435,5 @@ export default function LocationTracker({ onLocationUpdate, onNavigationStateCha
         </Card>
       )}
     </div>
-  )
+  );
 }
