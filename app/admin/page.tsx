@@ -23,6 +23,16 @@ import { createBuilding, updateBuilding, deleteBuilding } from "@/lib/actions"
 
 const categories = ["academic", "residential", "dining", "recreation", "administrative", "parking", "outdoor"]
 
+const categoryColors = {
+  academic: "#3b82f6", // Blue for academic buildings
+  residential: "#10b981", // Green for hostels
+  dining: "#f59e0b", // Orange for dining
+  recreation: "#8b5cf6", // Purple for sports/recreation
+  administrative: "#ef4444", // Red for admin buildings
+  parking: "#6b7280", // Gray for parking
+  outdoor: "#22c55e", // Light green for outdoor spaces
+}
+
 export default function AdminPage() {
   const [buildings, setBuildings] = useState([])
   const [error, setError] = useState(null)
@@ -138,8 +148,8 @@ export default function AdminPage() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-background via-background to-muted/30">
       {/* Header */}
-      <header className="border-b border-border/50 glass-effect sticky top-0 z-50">
-        <div className="container mx-auto px-6 py-5">
+      <header className="border-b bg-white/95 backdrop-blur supports-[backdrop-filter]:bg-white/60 gradient-living-header z-10 sticky top-0">
+        <div className="container mx-auto px-4 py-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-4">
               <Link href="/">
@@ -307,9 +317,9 @@ export default function AdminPage() {
           </div>
         </div>
       </header>
+      <div className="container mx-auto px-4 py-6 m-4">
+        <Card>
 
-      <div className="container mx-auto px-6 py-8">
-        <Card className="glass-effect animate-fade-in">
           <CardHeader>
             <CardTitle className="text-xl font-semibold gradient-text">Buildings Management</CardTitle>
             <CardDescription>Manage campus buildings and their information</CardDescription>
