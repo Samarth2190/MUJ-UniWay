@@ -176,7 +176,6 @@ export default function CampusNavigator() {
     fetchBuildings();
   }, [selectedCategory, searchQuery]);
 
-
   const categories = useMemo(() => {
     if (!Array.isArray(buildings)) return [];
     return [...new Set(buildings.map((b) => b.category))];
@@ -185,7 +184,6 @@ export default function CampusNavigator() {
   const handleBuildingClick = (building: Building) => {
     setSelectedBuilding(building);
   };
-
 
   const handleLocationUpdate = (location: LocationCoordinates) => {
     setCurrentLocation(location);
@@ -236,6 +234,9 @@ export default function CampusNavigator() {
 
   // Add new function for starting live navigation
   const startLiveNavigation = async () => {
+    console.log("Live navigation started successfully");
+    console.log("Selected Building:", selectedBuilding);
+    console.log("Current Route:", currentRoute);
     if (selectedBuilding && currentRoute) {
       try {
         await navigationService.startNavigation(
@@ -356,12 +357,21 @@ export default function CampusNavigator() {
       <div className="min-h-screen living-bg particle-bg flex items-center justify-center">
         <div className="text-center">
           <div className="relative mb-4">
-            <div className="text-red-500 text-6xl mb-4 shadow-glow-danger">⚠️</div>
+            <div className="text-red-500 text-6xl mb-4 shadow-glow-danger">
+              ⚠️
+            </div>
             <div className="absolute inset-0 bg-gradient-to-r from-red-400/20 to-orange-400/20 rounded-full blur-xl"></div>
           </div>
-          <h2 className="text-2xl font-bold mb-2 bg-gradient-to-r from-red-600 to-orange-600 bg-clip-text text-transparent">Error Loading Campus Map</h2>
+          <h2 className="text-2xl font-bold mb-2 bg-gradient-to-r from-red-600 to-orange-600 bg-clip-text text-transparent">
+            Error Loading Campus Map
+          </h2>
           <p className="text-muted-foreground mb-4">{error}</p>
-          <Button onClick={() => window.location.reload()} className="shadow-glow-danger">Try Again</Button>
+          <Button
+            onClick={() => window.location.reload()}
+            className="shadow-glow-danger"
+          >
+            Try Again
+          </Button>
         </div>
       </div>
     );
@@ -403,7 +413,11 @@ export default function CampusNavigator() {
                 label=""
                 placeholder="To"
                 value={navigationTo}
-                onValueChange={setNavigationTo}
+                // onValueChange={setNavigationTo}
+                onValueChange={(building) => {
+                  setNavigationTo(building);
+                  setSelectedBuilding(building); // Pass the selected building here
+                }}
                 buildings={buildings}
                 currentLocation={currentLocation}
                 allowCurrentLocation={false}
@@ -411,7 +425,8 @@ export default function CampusNavigator() {
               />
               {navigationFrom && navigationTo && (
                 <Button
-                  onClick={calculateRoute}
+                  // onClick={calculateRoute}
+                  onClick={startLiveNavigation}
                   className="shadow-crystal-medium hover:shadow-crystal-strong"
                   size="sm"
                 >
